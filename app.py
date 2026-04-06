@@ -165,7 +165,7 @@ if st.session_state.page == 'input':
         exercise = st.slider("🏋️ Exercise Days per Week", 0, 7, 3)
         sleep = st.slider("😴 Sleep Hours per Night", 3, 12, 7)
         stress = st.selectbox("🧘 Stress Level", ['Low', 'Medium', 'High'])
-        alcohol = st.selectbox("🍷 Alcohol Consumption", ['Low', 'Medium', 'High'])
+        alcohol = st.selectbox("🍷 Alcohol Consumption(**Low:** 0% Consumption)", ['Low', 'Medium', 'High'])
 
     if st.button("🔍 ANALYZE PATIENT PROFILE"):
         placeholder = st.empty()
