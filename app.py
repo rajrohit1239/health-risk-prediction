@@ -322,7 +322,7 @@ else:
     with btn_col:
         suggestion = "Great job! Maintain your current lifestyle, stay active, and keep a balanced diet." if "Low" in res['label'] else "Take care! Consider improving physical activity and managing stress levels." if "Medium" in res['label'] else "Action required! Please consult a healthcare professional immediately."
         pdf_data = generate_pdf(res, suggestion, precautions)
-        st.download_button(label="📥 Download Report Card", data=pdf_data, file_name="Health_Risk_Report.pdf", mime="application/pdf", use_container_width=True)
+        st.download_button(label="📥 Download Report", data=pdf_data, file_name="Health_Risk_Report.pdf", mime="application/pdf", use_container_width=True)
 
     color = "#4ade80" if "Low" in res['label'] else "#fbbf24" if "Medium" in res['label'] else "#f87171"
     st.write("---")
