@@ -31,6 +31,12 @@ def generate_pdf(res, suggestion, precautions):
     pdf.set_font("Arial", '', 11)
     pdf.set_text_color(0, 0, 0)
     
+    # Show Patient Name first in PDF
+    pdf.set_font("Arial", 'B', 10)
+    pdf.cell(50, 8, "Patient Name:", border=0)
+    pdf.set_font("Arial", '', 10)
+    pdf.cell(0, 8, f"{res['patient_name']}", border=0, ln=True)
+
     for key, value in res['metrics'].items():
         pdf.set_font("Arial", 'B', 10)
         pdf.cell(50, 8, f"{key}:", border=0)
@@ -213,7 +219,7 @@ st.markdown("""
     @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     div[data-baseweb="select"] > div { background-color: #ffffff !important; color: #1e293b !important; }
     h1, h2, h3, p, span, label, .stMarkdown { color: #ffffff !important; }
-    div.stSelectbox, div.stSlider, div.stNumberInput {
+    div.stSelectbox, div.stSlider, div.stNumberInput, div.stTextInput {
         background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px);
         border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 15px; padding: 10px 15px;
     }
@@ -239,6 +245,9 @@ if st.session_state.page == 'input':
     col1, col2 = st.columns(2, gap="large")
     with col1:
         st.markdown("### 👤 Personal Metrics")
+        # Added Patient Name Field
+        patient_name = st.text_input("📋 Patient Name", placeholder="Enter full name")
+        
         gender = st.selectbox("🚻 Gender", ["Male", "Female", "Other"])
         age = st.slider("🎂 Age", 18, 80, 22)
         weight = st.number_input("⚖️ Weight (kg)", 30.0, 200.0, 70.0)
@@ -295,6 +304,7 @@ if st.session_state.page == 'input':
 
             st.session_state.prediction_results = {
                 'label': label,
+                'patient_name': patient_name if patient_name else "Not Specified",
                 'metrics': {
                     "Age": age, "Gender": gender, "Weight": f"{weight} kg", "Height": f"{height_cm} cm",
                     "BMI Index": bmi, "Exercise": f"{exercise} days/week", "Sleep": f"{sleep} hours",
@@ -318,11 +328,12 @@ else:
 
     st.markdown("<div style='padding-top: 20px;'></div>", unsafe_allow_html=True)
     head_col, btn_col = st.columns([2.5, 1])
-    with head_col: st.markdown("<h1 style='margin:0;'>📋 Predicted Report</h1>", unsafe_allow_html=True)
+    # Show Patient Name in UI
+    with head_col: st.markdown(f"<h1 style='margin:0;'>📋 Report for: {res['patient_name']}</h1>", unsafe_allow_html=True)
     with btn_col:
         suggestion = "Great job! Maintain your current lifestyle, stay active, and keep a balanced diet." if "Low" in res['label'] else "Take care! Consider improving physical activity and managing stress levels." if "Medium" in res['label'] else "Action required! Please consult a healthcare professional immediately."
         pdf_data = generate_pdf(res, suggestion, precautions)
-        st.download_button(label="📥 Download Report", data=pdf_data, file_name="Health_Risk_Report.pdf", mime="application/pdf", use_container_width=True)
+        st.download_button(label="📥 Download Report Card", data=pdf_data, file_name=f"Health_Report_{res['patient_name']}.pdf", mime="application/pdf", use_container_width=True)
 
     color = "#4ade80" if "Low" in res['label'] else "#fbbf24" if "Medium" in res['label'] else "#f87171"
     st.write("---")
